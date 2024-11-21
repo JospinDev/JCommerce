@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-Commerce - Boutique en ligne</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6wgloeK6Ht0B9tKoxZTBBvVF704VBkUI",
+            authDomain: "jcommerce-66ef3.firebaseapp.com",
+            projectId: "jcommerce-66ef3",
+            storageBucket: "jcommerce-66ef3.firebasestorage.app",
+            messagingSenderId: "1089413034206",
+            appId: "1:1089413034206:web:9d8b0183bca1137adfd24f",
+            measurementId: "G-W8L9GCSGWV"
+        };
+
+        // Initialiser Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Exporter db pour l'utiliser dans contact.js
+        window.db = db;
+    </script>
+   
     <style>
         /* Reset et variables */
         :root {
@@ -637,18 +659,18 @@
     <!-- Contact -->
     <section class="contact" id="contact">
         <h2 class="section-title">Contactez-nous</h2>
-        <form class="contact-form">
+        <form id="contactForm" class="contact-form">
             <div class="form-group">
                 <label class="form-label">Nom</label>
-                <input type="text" class="form-input" required>
+                <input type="text" id="name" class="form-input" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" required>
+                <input type="email" id="email" class="form-input" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Message</label>
-                <textarea class="form-input" required></textarea>
+                <textarea id="message" class="form-input" required></textarea>
             </div>
             <button type="submit" class="cta-button">Envoyer</button>
         </form>
@@ -806,14 +828,9 @@
             });
         });
 
-        // Form Submission
-        const contactForm = document.querySelector('.contact-form');
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Add your form submission logic here
-            alert('Message envoyé avec succès!');
-            contactForm.reset();
-        });
+     
     </script>
+
+<script src="contact.js" type="module"></script>  
 </body>
 </html>
