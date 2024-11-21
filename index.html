@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-Commerce - Boutique en ligne</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset et variables */
+        :root {
+            --primary-light: #ffffff;
+            --secondary-light: #f8f9fa;
+            --text-light: #2c3e50;
+            --accent: #3498db;
+            --cta: #2ecc71;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-bg-light: rgba(255, 255, 255, 0.9);
+            
+            --primary-dark: #1a1a1a;
+            --secondary-dark: #2d2d2d;
+            --text-dark: #ecf0f1;
+            --shadow-dark: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --card-bg-dark: rgba(45, 45, 45, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--primary-dark);
+            color: var(--text-dark);
+        }
+
+        /* Header et Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .header {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-icon:hover {
+            color: var(--accent);
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            height: calc(100vh - 80px);
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://picsum.photos/2000/1000?random=1');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            background-color: var(--cta);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease 0.6s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Catégories */
+        .categories {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            position: relative;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+        }
+
+        /* Produits populaires */
+        .products {
+            padding: 5rem 2rem;
+            background-color: var(--secondary-light);
+            transition: background-color 0.3s ease;
+        }
+
+        .dark-mode .products {
+            background-color: var(--secondary-dark);
+        }
+
+        .products-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg-light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .product-card {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--cta);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background-color: #27ae60;
+        }
+
+        /* Formulaire de contact */
+        .contact {
+            max-width: 1400px;
+            margin: 5rem auto;
+            padding: 2rem;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg-light);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .dark-mode .contact-form {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: var(--primary-light);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .form-input {
+            background: var(--primary-dark);
+            color: var(--text-dark);
+            border-color: #444;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea.form-input {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary-light);
+            padding: 4rem 2rem 2rem;
+            margin-top: 5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .dark-mode .footer {
+            background-color: var(--secondary-dark);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: inherit;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg-light);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .dark-mode .modal-content {
+            background: var(--card-bg-dark);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        /* Panier */
+        .cart-modal .modal-content {
+            max-width: 800px;
+        }
+
+        .cart-items {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Authentification */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: var(--accent);
+            color: var(--accent);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">J-Commerce</a>
+            <ul class="nav-links">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#products">Produits</a></li>
+                <li><a href="#categories">Catégories</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button id="theme-toggle" class="nav-icon">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="nav-icon" id="auth-trigger">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="nav-icon" id="cart-trigger">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Découvrez notre collection exclusive</h1>
+            <p>Des produits de qualité supérieure pour satisfaire vos envies</p>
+            <button class="cta-button">Acheter maintenant</button>
+        </div>
+    </section>
+
+    <!-- Catégories -->
+    <section class="categories" id="categories">
+        <h2 class="section-title">Nos Catégories</h2>
+        <div class="categories-grid">
+            <div class="category-card">
+                <img src="https://picsum.photos/800/800?random=2" alt="Électronique">
+                <div class="category-content">
+                    <h3>Électronique</h3>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="https://picsum.photos/800/800?random=3" alt="Mode">
+                <div class="category-content">
+                    <h3>Mode</h3>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="https://picsum.photos/800/800?random=4" alt="Maison">
+                <div class="category-content">
+                    <h3>Maison</h3>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="https://picsum.photos/800/800?random=5" alt="Sport">
+                <div class="category-content">
+                    <h3>Sport</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Produits -->
+    <section class="products" id="products">
+        <h2 class="section-title">Produits Populaires</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="https://picsum.photos/800/800?random=6" alt="Produit 1" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Smartphone Ultra HD</h3>
+                    <p class="product-price">899 €</p>
+                    <button class="add-to-cart">Ajouter au panier</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://picsum.photos/800/800?random=7" alt="Produit 2" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Montre Connectée</h3>
+                    <p class="product-price">299 €</p>
+                    <button class="add-to-cart">Ajouter au panier</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://picsum.photos/800/800?random=8" alt="Produit 3" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Casque Audio Premium</h3>
+                    <p class="product-price">199 €</p>
+                    <button class="add-to-cart">Ajouter au panier</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://picsum.photos/800/800?random=9" alt="Produit 4" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Tablette Pro</h3>
+                    <p class="product-price">599 €</p>
+                    <button class="add-to-cart">Ajouter au panier</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Contactez-nous</h2>
+        <form class="contact-form">
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-input" required></textarea>
+            </div>
+            <button type="submit" class="cta-button">Envoyer</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>À propos</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Notre histoire</a></li>
+                    <li><a href="#">Carrières</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Conditions d'utilisation</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Service Client</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Centre d'aide</a></li>
+                    <li><a href="#">Livraison</a></li>
+                    <li><a href="#">Retours</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Suivez-nous</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 J-Commerce. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Connexion</div>
+                <div class="auth-tab" data-tab="register">Inscription</div>
+            </div>
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" class="form-input" required>
+                </div>
+                <button type="submit" class="cta-button">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal cart-modal" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Votre Panier</h2>
+            <div class="cart-items">
+                <!-- Les articles du panier seront ajoutés ici dynamiquement -->
+            </div>
+            <div class="cart-total">
+                Total: 0 €
+            </div>
+            <button class="cta-button">Procéder au paiement</button>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Modal Handling
+        const modals = document.querySelectorAll('.modal');
+        const modalTriggers = {
+            'auth-trigger': 'auth-modal',
+            'cart-trigger': 'cart-modal'
+        };
+
+        Object.entries(modalTriggers).forEach(([triggerId, modalId]) => {
+            const trigger = document.getElementById(triggerId);
+            const modal = document.getElementById(modalId);
+            const closeBtn = modal.querySelector('.close-modal');
+
+            trigger.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Auth Tabs
+        const authTabs = document.querySelectorAll('.auth-tab');
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Cart Functionality
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        let cartCount = 0;
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                cartCount++;
+                document.querySelector('.cart-count').textContent = cartCount;
+                // Add animation to cart icon
+                const cartIcon = document.querySelector('#cart-trigger');
+                cartIcon.style.animation = 'pulse 0.5s';
+                setTimeout(() => cartIcon.style.animation = '', 500);
+            });
+        });
+
+        // Form Submission
+        const contactForm = document.querySelector('.contact-form');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Message envoyé avec succès!');
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
