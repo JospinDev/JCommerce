@@ -19,7 +19,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
         });
         console.log("Document écrit avec ID: ", docRef.id);
         
-        alert("Votre message a été envoyé avec succès !");
+        alert("Votre message a été envoyé avec succès 👏!");
     } catch (e) {
         console.error("Erreur lors de l'ajout du document: ", e);
         alert("Une erreur s'est produite lors de l'envoi de votre message : " + e.message);
