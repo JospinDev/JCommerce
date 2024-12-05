@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notre Équipe</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script> <!-- Load Stripe.js -->
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://sdk.twilio.com/js/client/v1.9/twilio.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6wgloeK6Ht0B9tKoxZTBBvVF704VBkUI",
+            authDomain: "jcommerce-66ef3.firebaseapp.com",
+            projectId: "jcommerce-66ef3",
+            storageBucket: "jcommerce-66ef3.firebasestorage.app",
+            messagingSenderId: "1089413034206",
+            appId: "1:1089413034206:web:9d8b0183bca1137adfd24f",
+            measurementId: "G-W8L9GCSGWV"
+        };
+
+        // Initialiser Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Exporter db pour l'utiliser dans contact.js
+        window.db = db;
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2a2a2a;
+            --secondary-color: #4a90e2;
+            --background-color: #f5f5f5;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: var(--background-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: 0.5s;
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 3em;
+            font-weight: 700;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .team-header {
+            position:relative;
+            margin-top:80px;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .team-header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .team-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .team-member {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .member-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-info h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-info p {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .member-role {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .team-header h1 {
+                font-size: 2em;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        body.dark-mode {
+            background-color: var(--primary-dark);
+            color: var(--text-dark);
+        }
+
+        /* Header et Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .header {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-icon:hover {
+            color: var(--accent);
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .weather-widget-container {
+            position: fixed;
+            top: 80px; /* Adjust this value based on your header height */
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .weather-widget {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 250px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .weather-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .weather-icon {
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .weather-info {
+            flex-grow: 1;
+        }
+        
+        .weather-location {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .weather-temp {
+            font-size: 1.2em;
+            color: #3498db;
+            margin-bottom: 3px;
+        }
+        
+        .weather-description {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-transform: capitalize;
+        }
+        
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            .weather-widget {
+                background: rgba(30, 30, 30, 0.95);
+            }
+            
+            .weather-location {
+                color: #ecf0f1;
+            }
+            
+            .weather-temp {
+                color: #3498db;
+            }
+            
+            .weather-description {
+                color: #bdc3c7;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary-light);
+            padding: 4rem 2rem 2rem;
+            margin-top: 5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .dark-mode .footer {
+            background-color: var(--secondary-dark);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: inherit;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+        <!-- Header -->
+        <header class="header">
+            <nav class="nav-container">
+                <a href="#" class="logo">J-Commerce</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="index.html">Produits</a></li>
+                    <li><a href="index.html">Catégories</a></li>
+                    <li><a href="index.html">Contact</a></li>
+                    <li><a href="#">Membres du groupes</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button id="theme-toggle" class="nav-icon">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="nav-icon" id="auth-trigger">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="nav-icon" id="cart-trigger">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </div>
+                     
+                  
+    
+                    
+                </div>
+            </nav>
+    <div class="weather-widget-container">
+        <div class="weather-widget">
+            <div class="weather-content">
+                <div class="weather-icon"></div>
+                <div class="weather-info">
+                    <div class="weather-location">weather</div>
+                    <div class="weather-temp">--°C</div>
+                    <div class="weather-description">Please wait...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </header>
+    <div class="loading-screen">
+        <div class="loading-text">Notre Équipe Exceptionnelle</div>
+    </div>
+
+    <div class="container">
+        <div class="team-header" data-aos="fade-down">
+            <h1>Notre Équipe</h1>
+            <p>Découvrez les talents qui font notre force</p>
+        </div>
+
+        <div class="team-grid">
+            <!-- Membre 1 -->
+            <div class="team-member" data-aos="fade-up" data-aos-delay="100">
+                <div class="member-image">
+                    <img src="images/jospin.png" alt="Membre 1">
+                </div>
+                <div class="member-info">
+                    <h3>Fadhili William Jospin</h3>
+                    <div class="member-role">Full Stack</div>
+                    <p>Leader visionnaire avec 1 an d'expérience</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membre 2 -->
+            <div class="team-member" data-aos="fade-up" data-aos-delay="200">
+                <div class="member-image">
+                    <img src="images/daniel.jpg" alt="Membre 2">
+                </div>
+                <div class="member-info">
+                    <h3>Daniel Kamuntu Birindwa</h3>
+                    <div class="member-role">Designer</div>
+                    <p>Experte en Style(Design)</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membre 3 -->
+            <div class="team-member" data-aos="fade-up" data-aos-delay="300">
+                <div class="member-image">
+                    <img src="images/rosine.jpg" alt="Membre 3">
+                </div>
+                <div class="member-info">
+                    <h3>Gahimbare Rosine</h3>
+                    <div class="member-role">Gestionnaire</div>
+                    <p>Expert en gestion de projets innovants</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membre 4 -->
+            <div class="team-member" data-aos="fade-up" data-aos-delay="400">
+                <div class="member-image">
+                    <img src="images/appolon.jpg" alt="Membre 4">
+                </div>
+                <div class="member-info">
+                    <h3>Dusabe Appolon</h3>
+                    <div class="member-role">Fronted Developper</div>
+                    <p>Passionné par les technologies innovantes</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>À propos</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Notre histoire</a></li>
+                    <li><a href="#">Carrières</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Conditions d'utilisation</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Service Client</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Centre d'aide</a></li>
+                    <li><a href="#">Livraison</a></li>
+                    <li><a href="#">Retours</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Suivez-nous</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://wa.me/25765805506" target="_blank" class="nav-icon whatsapp-icon"><i class="fa-brands fa-whatsapp"></i></a>
+                
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 J-Commerce. Tous droits réservés.</p>
+        </div>
+    </footer>
+    <script type="module" src="weather.js"></script>
+    <script type="module" src="sms.js"></script>
+    <script type="module" src="contact.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+    <script>
+        // Initialisation des animations AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Gestion de l'écran de chargement
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.opacity = '0';
+                document.querySelector('.container').style.opacity = '1';
+                setTimeout(() => {
+                    document.querySelector('.loading-screen').style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+
+        // Animation du texte de chargement
+        const loadingTexts = [
+            "Notre Équipe Exceptionnelle",
+            "Des Talents Uniques",
+            "Une Équipe Passionnée",
+            "L'Excellence au Quotidien"
+        ];
+
+        let currentIndex = 0;
+        const loadingText = document.querySelector('.loading-text');
+
+        setInterval(() => {
+            loadingText.style.opacity = 0;
+            setTimeout(() => {
+                loadingText.textContent = loadingTexts[currentIndex];
+                loadingText.style.opacity = 1;
+                currentIndex = (currentIndex + 1) % loadingTexts.length;
+            }, 500);
+        }, 2000);
+    </script>
+</body>
+</html>
