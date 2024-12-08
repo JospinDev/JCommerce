@@ -159,6 +159,12 @@
                 font-size: 1.5rem;
             }
         }
+        #response{
+        color:green;
+        }
+        .hidden{
+            display:none;
+        }
     </style>
 </head>
 <body>
@@ -186,9 +192,11 @@
                 <i class="fas fa-arrow-left"></i>
                 Retour
             </a>
+
+    <div id="response" class="hidden"></div>
         </form>
     </div>
-
+<script src="sms.js" type="module"></script>
     <script>
         function validateForm(event) {
             event.preventDefault();
@@ -241,6 +249,6 @@
             });
         });
     </script>
-  <script src="sms.js" type="module"></script>
+  
 </body>
 </html>
